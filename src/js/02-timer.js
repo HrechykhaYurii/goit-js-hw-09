@@ -22,11 +22,12 @@ const options = {
   defaultDate: new Date(),
   minuteIncrement: 1,
   onClose(selectedDates) {
-    if (selectedDates[0] < new Date()) {
+    const pastDate = selectedDates[0] < Date.now();
+    if (pastDate) {
       Notiflix.Notify.failure('Please choose a date in the future');
-      startBtnEl.disabled = true;
+      startBtnEl.disabled = pastDate;
     }
-      startBtnEl.disabled = false;
+      startBtnEl.disabled = pastDate;
   },
 };
 
@@ -38,10 +39,10 @@ function convertMs(ms) {
   const hour = minute * 60;
   const day = hour * 24;
 
-  const days = addLeadingZero(Math.floor(ms / day));
-  const hours = addLeadingZero(Math.floor((ms % day) / hour));
-  const minutes = addLeadingZero(Math.floor(((ms % day) % hour) / minute));
-  const seconds = addLeadingZero(Math.floor((((ms % day) % hour) % minute) / second));
+  const days = Math.floor(ms / day);
+  const hours = Math.floor((ms % day) / hour);
+  const minutes = Math.floor(((ms % day) % hour) / minute);
+  const seconds = Math.floor((((ms % day) % hour) % minute) / second);
 
   return { days, hours, minutes, seconds };
 }
@@ -53,19 +54,27 @@ function addLeadingZero(value) {
 function onStartClick() {
   let  timerId = setInterval(() => {
     const selectedTime =  new Date(input.value);
-    const timeValue = selectedTime - new Date();
+    const timeValue = selectedTime - Date.now();
 
     startBtnEl.disabled = true;
 
     if (timeValue >= 0) {
       let leftTime = convertMs(timeValue);
-      leftDays.textContent = leftTime.days;
-      leftHours.textContent = leftTime.hours;
-      leftMinutes.textContent = leftTime.minutes;
-      leftSeconds.textContent = leftTime.seconds;
+      updateTimer(leftTime)
+      // leftDays.textContent = leftTime.days;
+      // leftHours.textContent = leftTime.hours;
+      // leftMinutes.textContent = leftTime.minutes;
+      // leftSeconds.textContent = leftTime.seconds;
       } else {
         Notiflix.Notify.success('Finish');
         clearInterval(timerId);
         }
   },PROMPT_DELAY);
+}
+
+function updateTimer({ days, hours, minutes, seconds }) {
+    leftDays.textContent = addLeadingZero(days);
+    leftHours.textContent = addLeadingZero(hours);
+    leftMinutes.textContent = addLeadingZero(minutes);
+    leftSeconds.textContent = addLeadingZero(seconds);
 }

@@ -13,15 +13,22 @@ let timerId = null;
 const PROMPT_DELAY = 1000;
 
 function onClickStart() {
-  startBtnEl.disabled = true;
-  stopBtnEl.disabled = false;
+  isActiveBtn(true)
+  // startBtnEl.disabled = true;
+  // stopBtnEl.disabled = false;
   timerId = setInterval(changeColor, PROMPT_DELAY);
 }
 
 function onClickStop() {
-  startBtnEl.disabled = false;
-  stopBtnEl.disabled = true;
+  isActiveBtn(false)
+  // startBtnEl.disabled = false;
+  // stopBtnEl.disabled = true;
   clearInterval(timerId);
+}
+
+function isActiveBtn(active) {
+  startBtnEl.disabled = active;
+  stopBtnEl.disabled = !active;
 }
 
 function changeColor() {

@@ -1,22 +1,36 @@
 import Notiflix from 'notiflix';
 
-const refs = {
-  form: document.querySelector('.form'),
-  firstDelay:document.querySelector('input[name = "delay"]'),
-  step:document.querySelector('input[name = "step"]'),
-  amount:document.querySelector('input[name = "amount"]'),
-};
+// const refs = {
+//   form: document.querySelector('.form'),
+//   firstDelay:document.querySelector('input[name = "delay"]'),
+//   step:document.querySelector('input[name = "step"]'),
+//   amount:document.querySelector('input[name = "amount"]'),
+// };
 
-refs.form.addEventListener('submit', onFormSubmit);
+// refs.form.addEventListener('submit', onFormSubmit);
+
+const formEl = document.querySelector('.form');
+
+formEl.addEventListener('click', onFormSubmit);
 
 function onFormSubmit(evt) {
   evt.preventDefault();
-  const firstDelay = Number(refs.firstDelay.value);
-  const step = Number(refs.step.value);
-  const amount = Number(refs.amount.value);
+
+  if (evt.target.nodeName !== 'BUTTON') {
+  return;
+  }
+  const formData = {
+    firstDelay: formEl.delay.value,
+    step: formEl.step.value,
+    amount: formEl.amount.value,
+  };
+
+  // const firstDelay = Number(refs.firstDelay.value);
+  // const step = Number(refs.step.value);
+  // const amount = Number(refs.amount.value);
   
-  for (let i = 1; i <= amount; i += 1){
-    const delayStep = firstDelay + step * (i - 1);
+  for (let i = 1; i <= Number(formData.amount); i += 1){
+    const delayStep = Number(formData.firstDelay) + Number(formData.step) * (i - 1);
     createPromise(i, delayStep).then(onSuccess).catch(onError)
   };
 };
